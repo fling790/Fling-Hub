@@ -1,0 +1,132 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Fling Hub",
+    Text = "sup ig",
+    Duration = 5
+})
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Fling Hub",
+    Text = "Btw The Key Changes Every 24 Hours. Join the Discord Server if you can't find it.",
+    Duration = 5
+})
+
+local Window = Rayfield:CreateWindow({
+    Name = "Fling Hub | Universal",
+    LoadingTitle = "Loading...",
+    LoadingSubtitle = "by Fling",
+    ConfigurationSaving = {
+        Enabled = false,
+        FolderName = nil,
+        FileName = "Fling Hub"
+    },
+    Discord = {
+        Enabled = true,
+        Invite = "qTRxkP8K",
+        RememberJoins = true
+    },
+    KeySystem = true,
+    KeySettings = {
+        Title = "Get Key",
+        Subtitle = "Key System",
+        Note = "Key In Discord Server",
+        FileName = "YoutubeHubKey1",
+        SaveKey = false,
+        GrabKeyFromSite = true,
+        Key = {"https://pastebin.com/raw/8eAs3Fab"}
+    }
+})
+
+local MainTab = Window:CreateTab("Visual", nil)
+local MainSection = MainTab:CreateSection("Main")
+
+Rayfield:Notify({
+    Title = "You executed the script",
+    Content = "Fling Hub",
+    Duration = 5,
+    Image = 13047715178,
+    Actions = {
+        Ignore = {
+            Name = "Okay!",
+            Callback = function()
+                print("The user tapped Okay!")
+            end
+        }
+    }
+})
+
+-- Infinite Jump / Fake WallHop
+local UserInputService = game:GetService("UserInputService")
+
+local Button = MainTab:CreateButton({
+    Name = "Fake WallHop (infinite jump)",
+    Callback = function()
+        _G.infinjump = not _G.infinjump
+
+        if _G.infinJumpStarted == nil then
+            _G.infinJumpStarted = true
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Fling Hub",
+                Text = "Wall Hop Activated ig",
+                Duration = 5
+            })
+
+            UserInputService.InputBegan:Connect(function(input, isProcessed)
+                if not isProcessed and _G.infinjump then
+                    if input.KeyCode == Enum.KeyCode.Space then
+                        local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                        if humanoid then
+                            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                            task.wait()
+                            humanoid:ChangeState(Enum.HumanoidStateType.Seated)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+})
+
+MainTab:CreateSlider({
+    Name = "WalkSpeed Slider",
+    Range = {1, 350},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "sliderws",
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+    end
+})
+
+MainTab:CreateSlider({
+    Name = "JumpPower Slider",
+    Range = {1, 350},
+    Increment = 1,
+    Suffix = "Power",
+    CurrentValue = 50,
+    Flag = "sliderjp",
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+    end
+})
+
+MainTab:CreateInput({
+    Name = "Walkspeed",
+    PlaceholderText = "1-500",
+    RemoveTextAfterFocusLost = true,
+    Callback = function(Text)
+        local value = tonumber(Text)
+        if value then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+        end
+    end
+})
+
+local TPTab = Window:CreateTab("🎲 Misc", nil)
+
+TPTab:CreateParagraph({
+    Title = "Info",
+    Content = "When your key doesn't work, go to our Discord server. If there's no new key, DM me. Soon a ticket bot will help you get a new key."
+})
