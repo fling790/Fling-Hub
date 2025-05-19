@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 -- Notifications for Fling Hub
 game.StarterGui:SetCore("SendNotification", {
     Title = "Fling Hub",
-    Text = "sup ig",
+    Text = "We Made A Build In Executor In The Script!",
     Duration = 5
 })
 
@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 3 Is Out!",
+    LoadingTitle = "Version 4 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -189,7 +189,7 @@ createSupportedGamesTab()
 
 -- Create the Executor Tab
 local ExecutorTab = Window:CreateTab("Executor", nil)
-local ExecutorSection = ExecutorTab:CreateSection("Script Executor")
+local ExecutorSection = ExecutorTab:CreateSection("Script Executor [Beta]")
 
 -- Add a large input box for script input
 ExecutorTab:CreateInput({
