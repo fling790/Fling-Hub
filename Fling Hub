@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 6 Is Out!",
+    LoadingTitle = "Version 7 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -284,5 +284,47 @@ JoinGameTab:CreateButton({
         local TeleportService = game:GetService("TeleportService")
         local Players = game:GetService("Players")
         TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+    end
+})
+
+VisualTab:CreateButton({
+    Name = "Fling All",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/zqyDSUWX"))()
+    end
+})
+
+local flingLoopEnabled = false
+
+VisualTab:CreateToggle({
+    Name = "Loop Fling All",
+    CurrentValue = false,
+    Flag = "flingalltoggle",
+    Callback = function(Value)
+        flingLoopEnabled = Value
+
+        if flingLoopEnabled then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Fling All",
+                Text = "Loop Flinging Started",
+                Duration = 4
+            })
+
+            task.spawn(function()
+                while flingLoopEnabled do
+                    -- Safely attempt to execute the fling script
+                    pcall(function()
+                        loadstring(game:HttpGet("https://pastebin.com/raw/zqyDSUWX"))()
+                    end)
+                    task.wait(2.5) -- Adjust interval as needed
+                end
+            end)
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Fling All",
+                Text = "Loop Flinging Stopped",
+                Duration = 4
+            })
+        end
     end
 })
