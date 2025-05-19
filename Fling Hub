@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 4 Is Out!",
+    LoadingTitle = "Version 5 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
