@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 5 Is Out!",
+    LoadingTitle = "Version 6 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -219,153 +219,70 @@ ExecutorTab:CreateInput({
     end
 })
 
+
+
 -- Create the "Join a Game" Tab
 local JoinGameTab = Window:CreateTab("Join a Game", nil)
 JoinGameTab:CreateSection("Teleport Options")
 
--- Store the inputted game ID
-_G.GameToJoinId = nil
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
--- Input for Game ID
-JoinGameTab:CreateInput({
-    Name = "Enter Game ID",
-    PlaceholderText = "e.g., 2788229376",
-    RemoveTextAfterFocusLost = true,
-    Callback = function(text)
-        local id = tonumber(text)
-        if id then
-            _G.GameToJoinId = id
-        else
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Join a Game",
-                Text = "Please enter a valid numeric game ID.",
-                Duration = 4
-            })
-        end
-    end
-})
-
--- Button to Join the Entered Game
+-- Button 1: Server Hop In Current Game
 JoinGameTab:CreateButton({
-    Name = "Join Game by ID",
+    Name = "Join A Random Server In The Game You Are In.",
     Callback = function()
-        if _G.GameToJoinId then
-            game:GetService("TeleportService"):Teleport(_G.GameToJoinId, game.Players.LocalPlayer)
+        local placeId = game.PlaceId
+        local success, servers = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"))
+        end)
+
+        if success and servers and servers.data then
+            local available = {}
+            for _, server in pairs(servers.data) do
+                if server.playing < server.maxPlayers and server.id ~= game.JobId then
+                    table.insert(available, server.id)
+                end
+            end
+
+            if #available > 0 then
+                local randomServerId = available[math.random(1, #available)]
+                TeleportService:TeleportToPlaceInstance(placeId, randomServerId, player)
+            else
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Server Hop",
+                    Text = "No available servers found.",
+                    Duration = 4
+                })
+            end
         else
             game.StarterGui:SetCore("SendNotification", {
-                Title = "Join a Game",
-                Text = "You must enter a game ID first.",
+                Title = "Server Hop",
+                Text = "Failed to fetch server list.",
                 Duration = 4
             })
         end
     end
 })
 
--- Button to Rejoin Current Game
+-- Button: Rejoin Exact Same Server
+JoinGameTab:CreateButton({
+    Name = "Rejoin Exact Server",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local Players = game:GetService("Players")
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, Players.LocalPlayer)
+    end
+})
+
+-- Button: Rejoin Current Game
 JoinGameTab:CreateButton({
     Name = "Rejoin Current Game",
     Callback = function()
         local TeleportService = game:GetService("TeleportService")
-        local player = game.Players.LocalPlayer
-        TeleportService:Teleport(game.PlaceId, player)
+        local Players = game:GetService("Players")
+        TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
     end
 })
-
--- Create the Calculator Tab
-local CalculatorTab = Window:CreateTab("Calculator", nil)
-CalculatorTab:CreateSection("Basic Calculator")
-
-local firstNumber, secondNumber, operator
-
--- Input for First Number
-CalculatorTab:CreateInput({
-    Name = "First Number",
-    PlaceholderText = "Enter first number",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(text)
-        firstNumber = tonumber(text)
-        if not firstNumber then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Calculator",
-                Text = "First input must be a number.",
-                Duration = 4
-            })
-        end
-    end
-})
-
--- Input for Operator (+, -, *, /)
-CalculatorTab:CreateInput({
-    Name = "Operator (+, -, *, /)",
-    PlaceholderText = "Enter operator",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(text)
-        operator = text
-        if not (operator == "+" or operator == "-" or operator == "*" or operator == "/") then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Calculator",
-                Text = "Invalid operator. Use +, -, *, or /.",
-                Duration = 4
-            })
-            operator = nil
-        end
-    end
-})
-
--- Input for Second Number
-CalculatorTab:CreateInput({
-    Name = "Second Number",
-    PlaceholderText = "Enter second number",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(text)
-        secondNumber = tonumber(text)
-        if not secondNumber then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Calculator",
-                Text = "Second input must be a number.",
-                Duration = 4
-            })
-        end
-    end
-})
-
--- Button to calculate
-CalculatorTab:CreateButton({
-    Name = "Calculate",
-    Callback = function()
-        if firstNumber and secondNumber and operator then
-            local result
-            if operator == "+" then
-                result = firstNumber + secondNumber
-            elseif operator == "-" then
-                result = firstNumber - secondNumber
-            elseif operator == "*" then
-                result = firstNumber * secondNumber
-            elseif operator == "/" then
-                if secondNumber == 0 then
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Calculator",
-                        Text = "Cannot divide by zero.",
-                        Duration = 4
-                    })
-                    return
-                end
-                result = firstNumber / secondNumber
-            end
-
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Calculator Result",
-                Text = "Result: " .. tostring(result),
-                Duration = 6
-            })
-        else
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Calculator",
-                Text = "Please fill in all fields correctly.",
-                Duration = 4
-            })
-        end
-    end
-})
-
-
