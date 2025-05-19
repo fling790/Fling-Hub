@@ -128,5 +128,5 @@ local TPTab = Window:CreateTab("🎲 Misc", nil)
 
 TPTab:CreateParagraph({
     Title = "Info",
-    Content = "When Your Key Doesn't Work Go To Our Discord Server And When There Is No New Key DM Me And Soon I Will Make A Ticket Bot Where You Can Get Your New Ticket.
+    Content = "When your key doesn't work, go to our Discord server. If there is no new key, DM me and soon I will create a ticket bot where you can get your new key."
 })
