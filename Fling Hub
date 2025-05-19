@@ -1,5 +1,6 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+-- Notifications for Fling Hub
 game.StarterGui:SetCore("SendNotification", {
     Title = "Fling Hub",
     Text = "sup ig",
@@ -12,6 +13,7 @@ game.StarterGui:SetCore("SendNotification", {
     Duration = 5
 })
 
+-- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
     LoadingTitle = "Version 2 Is Out!",
@@ -38,32 +40,15 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
-local MainTab = Window:CreateTab("Visual", nil)
-local MainSection = MainTab:CreateSection("Main")
+-- Create the Visual Tab (This tab will always be visible)
+local VisualTab = Window:CreateTab("Visual", nil)
+local MainSection = VisualTab:CreateSection("Main")
 
-Rayfield:Notify({
-    Title = "You executed the script",
-    Content = "Fling Hub",
-    Duration = 5,
-    Image = 13047715178,
-    Actions = {
-        Ignore = {
-            Name = "Okay!",
-            Callback = function()
-                print("The user tapped Okay!")
-            end
-        }
-    }
-})
-
--- Infinite Jump / Fake WallHop
-local UserInputService = game:GetService("UserInputService")
-
-local Button = MainTab:CreateButton({
-    Name = "Fake WallHop (infinite jump)",
+-- Add buttons to the Visual Tab (Buttons for visual adjustments, etc.)
+VisualTab:CreateButton({
+    Name = "Fake WallHop (Infinite Jump)",
     Callback = function()
         _G.infinjump = not _G.infinjump
-
         if _G.infinJumpStarted == nil then
             _G.infinJumpStarted = true
             game.StarterGui:SetCore("SendNotification", {
@@ -72,6 +57,7 @@ local Button = MainTab:CreateButton({
                 Duration = 5
             })
 
+            local UserInputService = game:GetService("UserInputService")
             UserInputService.InputBegan:Connect(function(input, isProcessed)
                 if not isProcessed and _G.infinjump then
                     if input.KeyCode == Enum.KeyCode.Space then
@@ -88,7 +74,7 @@ local Button = MainTab:CreateButton({
     end
 })
 
-MainTab:CreateSlider({
+VisualTab:CreateSlider({
     Name = "WalkSpeed Slider",
     Range = {16, 350},
     Increment = 1,
@@ -100,7 +86,7 @@ MainTab:CreateSlider({
     end
 })
 
-MainTab:CreateSlider({
+VisualTab:CreateSlider({
     Name = "JumpPower Slider",
     Range = {1, 350},
     Increment = 1,
@@ -112,8 +98,8 @@ MainTab:CreateSlider({
     end
 })
 
-MainTab:CreateInput({
-    Name = "Walkspeed",
+VisualTab:CreateInput({
+    Name = "Set WalkSpeed",
     PlaceholderText = "1-500",
     RemoveTextAfterFocusLost = true,
     Callback = function(Text)
@@ -124,9 +110,79 @@ MainTab:CreateInput({
     end
 })
 
-local TPTab = Window:CreateTab("🎲 Misc", nil)
+-- Function to create the "Supported Games" Tab and Display Supported Games List
+local function createSupportedGamesTab()
+    local supportedGames = {
+        {Name = "Just a Baseplate", GameId = 17574618959},
+        {Name = "Da Hood", GameId = 2788229376},
+        {Name = "Grow A Garden", GameId = 126884695634066},
+        {Name = "Dead Rails", GameId = 116495829188952},
+        {Name = "Speed Hub X", GameId = 126884695634066}
+    }
 
-TPTab:CreateParagraph({
-    Title = "Info",
-    Content = "When your key doesn't work, go to our Discord server. If there is no new key, DM me and soon I will create a ticket bot where you can get your new key."
-})
+    -- Create Supported Games Tab
+    local SupportedGamesTab = Window:CreateTab("Supported Games", nil)
+
+    -- Create a list of supported games
+    local supportedGamesText = "Supported Games:\n\n"
+    for _, game in pairs(supportedGames) do
+        supportedGamesText = supportedGamesText .. game.Name .. " (Game ID: " .. game.GameId .. ")\n"
+    end
+
+    -- Add a paragraph to display the supported games list
+    SupportedGamesTab:CreateParagraph({
+        Title = "List of Supported Games",
+        Content = supportedGamesText
+    })
+end
+
+-- Create a custom tab for each supported game
+local function createGameTab(gameName, gameId, buttonName, scriptUrl)
+    local gameTab = Window:CreateTab(gameName, nil)
+
+    gameTab:CreateParagraph({
+        Title = "Welcome to " .. gameName .. "!",
+        Content = "Enjoy the features of " .. gameName
+    })
+
+    -- Create the button to execute the script for that game
+    gameTab:CreateButton({
+        Name = buttonName,
+        Callback = function()
+            -- Load the script from the provided URL
+            loadstring(game:HttpGet(scriptUrl))()
+        end
+    })
+end
+
+-- Create tabs based on the current game being played (by GameId)
+local placeId = game.PlaceId
+
+if placeId == 17574618959 then
+    createGameTab("Just a Baseplate", placeId, "Hat Hub", "https://raw.githubusercontent.com/inkdupe/hat-scripts/refs/heads/main/updatedhathub.lua")
+elseif placeId == 2788229376 then
+    createGameTab("Da Hood", placeId, "Star Hook", "https://raw.githubusercontent.com/linemaster2/storage/main/Drawing.lua")
+elseif placeId == 126884695634066 then
+    createGameTab("Grow A Garden", placeId, "Speed Hub X", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+elseif placeId == 116495829188952 then
+    createGameTab("Dead Rails", placeId, "Auto Bonds", "https://raw.githubusercontent.com/m00ndiety/OP-AUTO-BONDS-V3/refs/heads/main/Keyless-BONDS-v3")
+else
+    -- If the game is not supported, display "Not Supported Game" tab
+    local NotSupportedTab = Window:CreateTab("Not Supported Game", nil)
+    NotSupportedTab:CreateParagraph({
+        Title = "This game is not supported",
+        Content = "This game is not supported by Fling Hub. Please check back later or contact the developer for support."
+    })
+    
+    -- Add Infinite Yield button to unsupported games
+    NotSupportedTab:CreateButton({
+        Name = "Infinite Yield",
+        Callback = function()
+            -- Load and run Infinite Yield script
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        end
+    })
+end
+
+-- Create the "Supported Games" Tab
+createSupportedGamesTab()
