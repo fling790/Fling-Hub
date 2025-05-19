@@ -270,3 +270,102 @@ JoinGameTab:CreateButton({
         TeleportService:Teleport(game.PlaceId, player)
     end
 })
+
+-- Create the Calculator Tab
+local CalculatorTab = Window:CreateTab("Calculator", nil)
+CalculatorTab:CreateSection("Basic Calculator")
+
+local firstNumber, secondNumber, operator
+
+-- Input for First Number
+CalculatorTab:CreateInput({
+    Name = "First Number",
+    PlaceholderText = "Enter first number",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(text)
+        firstNumber = tonumber(text)
+        if not firstNumber then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Calculator",
+                Text = "First input must be a number.",
+                Duration = 4
+            })
+        end
+    end
+})
+
+-- Input for Operator (+, -, *, /)
+CalculatorTab:CreateInput({
+    Name = "Operator (+, -, *, /)",
+    PlaceholderText = "Enter operator",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(text)
+        operator = text
+        if not (operator == "+" or operator == "-" or operator == "*" or operator == "/") then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Calculator",
+                Text = "Invalid operator. Use +, -, *, or /.",
+                Duration = 4
+            })
+            operator = nil
+        end
+    end
+})
+
+-- Input for Second Number
+CalculatorTab:CreateInput({
+    Name = "Second Number",
+    PlaceholderText = "Enter second number",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(text)
+        secondNumber = tonumber(text)
+        if not secondNumber then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Calculator",
+                Text = "Second input must be a number.",
+                Duration = 4
+            })
+        end
+    end
+})
+
+-- Button to calculate
+CalculatorTab:CreateButton({
+    Name = "Calculate",
+    Callback = function()
+        if firstNumber and secondNumber and operator then
+            local result
+            if operator == "+" then
+                result = firstNumber + secondNumber
+            elseif operator == "-" then
+                result = firstNumber - secondNumber
+            elseif operator == "*" then
+                result = firstNumber * secondNumber
+            elseif operator == "/" then
+                if secondNumber == 0 then
+                    game.StarterGui:SetCore("SendNotification", {
+                        Title = "Calculator",
+                        Text = "Cannot divide by zero.",
+                        Duration = 4
+                    })
+                    return
+                end
+                result = firstNumber / secondNumber
+            end
+
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Calculator Result",
+                Text = "Result: " .. tostring(result),
+                Duration = 6
+            })
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Calculator",
+                Text = "Please fill in all fields correctly.",
+                Duration = 4
+            })
+        end
+    end
+})
+
+
