@@ -186,3 +186,35 @@ end
 
 -- Create the "Supported Games" Tab
 createSupportedGamesTab()
+
+-- Create the Executor Tab
+local ExecutorTab = Window:CreateTab("Executor", nil)
+local ExecutorSection = ExecutorTab:CreateSection("Script Executor")
+
+-- Add a large input box for script input
+ExecutorTab:CreateInput({
+    Name = "Paste Script Here",
+    PlaceholderText = "Paste any Lua script here...",
+    RemoveTextAfterFocusLost = false,
+    MultiLine = true,
+    Callback = function(scriptCode)
+        -- Try to run the user's pasted script
+        local success, errorMsg = pcall(function()
+            loadstring(scriptCode)()
+        end)
+        
+        if success then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Executor",
+                Text = "Script executed successfully!",
+                Duration = 5
+            })
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Executor",
+                Text = "Error: " .. errorMsg,
+                Duration = 5
+            })
+        end
+    end
+})
