@@ -14,7 +14,7 @@ game.StarterGui:SetCore("SendNotification", {
 
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Loading...",
+    LoadingTitle = "Version 2 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -34,7 +34,7 @@ local Window = Rayfield:CreateWindow({
         FileName = "YoutubeHubKey1",
         SaveKey = false,
         GrabKeyFromSite = true,
-        Key = {"https://pastebin.com/raw/8eAs3Fab"}
+        Key = {"https://raw.githubusercontent.com/fling790/fling-hub-key/refs/heads/main/fling%20key"}
     }
 })
 
@@ -90,7 +90,7 @@ local Button = MainTab:CreateButton({
 
 MainTab:CreateSlider({
     Name = "WalkSpeed Slider",
-    Range = {1, 350},
+    Range = {16, 350},
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = 16,
@@ -128,5 +128,5 @@ local TPTab = Window:CreateTab("🎲 Misc", nil)
 
 TPTab:CreateParagraph({
     Title = "Info",
-    Content = "When your key doesn't work, go to our Discord server. If there's no new key, DM me. Soon a ticket bot will help you get a new key."
+    Content = "When Your Key Doesn't Work Go To Our Discord Server And When There Is No New Key DM Me And Soon I Will Make A Ticket Bot Where You Can Get Your New Ticket.
 })
