@@ -218,3 +218,55 @@ ExecutorTab:CreateInput({
         end
     end
 })
+
+-- Create the "Join a Game" Tab
+local JoinGameTab = Window:CreateTab("Join a Game", nil)
+JoinGameTab:CreateSection("Teleport Options")
+
+-- Store the inputted game ID
+_G.GameToJoinId = nil
+
+-- Input for Game ID
+JoinGameTab:CreateInput({
+    Name = "Enter Game ID",
+    PlaceholderText = "e.g., 2788229376",
+    RemoveTextAfterFocusLost = true,
+    Callback = function(text)
+        local id = tonumber(text)
+        if id then
+            _G.GameToJoinId = id
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Join a Game",
+                Text = "Please enter a valid numeric game ID.",
+                Duration = 4
+            })
+        end
+    end
+})
+
+-- Button to Join the Entered Game
+JoinGameTab:CreateButton({
+    Name = "Join Game by ID",
+    Callback = function()
+        if _G.GameToJoinId then
+            game:GetService("TeleportService"):Teleport(_G.GameToJoinId, game.Players.LocalPlayer)
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Join a Game",
+                Text = "You must enter a game ID first.",
+                Duration = 4
+            })
+        end
+    end
+})
+
+-- Button to Rejoin Current Game
+JoinGameTab:CreateButton({
+    Name = "Rejoin Current Game",
+    Callback = function()
+        local TeleportService = game:GetService("TeleportService")
+        local player = game.Players.LocalPlayer
+        TeleportService:Teleport(game.PlaceId, player)
+    end
+})
