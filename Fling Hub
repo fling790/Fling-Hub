@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 7 Is Out!",
+    LoadingTitle = "Version 8 Is Out!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -326,5 +326,12 @@ VisualTab:CreateToggle({
                 Duration = 4
             })
         end
+    end
+})
+
+VisualTab:CreateButton({
+    Name = "Anti Exploiter Fling",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/C9aAXb9C"))()
     end
 })
