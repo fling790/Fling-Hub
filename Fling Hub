@@ -16,7 +16,7 @@ game.StarterGui:SetCore("SendNotification", {
 -- Initialize the Fling Hub window
 local Window = Rayfield:CreateWindow({
     Name = "Fling Hub | Universal",
-    LoadingTitle = "Version 8 Is Out!",
+    LoadingTitle = "Version 9 Is Here!",
     LoadingSubtitle = "by Fling",
     ConfigurationSaving = {
         Enabled = false,
@@ -333,5 +333,67 @@ VisualTab:CreateButton({
     Name = "Anti Exploiter Fling",
     Callback = function()
         loadstring(game:HttpGet("https://pastebin.com/raw/C9aAXb9C"))()
+    end
+})
+
+VisualTab:CreateButton({
+    Name = "Auto-Follow Nearest Player (Press X to toggle)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local UserInputService = game:GetService("UserInputService")
+        local StarterGui = game:GetService("StarterGui")
+
+        local LocalPlayer = Players.LocalPlayer
+        local followEnabled = false
+
+        local function notify(msg)
+            StarterGui:SetCore("SendNotification", {
+                Title = "Auto-Follow",
+                Text = msg,
+                Duration = 3
+            })
+        end
+
+        local function getNearestPlayer()
+            local closest, shortestDist = nil, math.huge
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if myHRP then
+                        local dist = (player.Character.HumanoidRootPart.Position - myHRP.Position).Magnitude
+                        if dist < shortestDist then
+                            shortestDist = dist
+                            closest = player
+                        end
+                    end
+                end
+            end
+            return closest
+        end
+
+        UserInputService.InputBegan:Connect(function(input, processed)
+            if not processed and input.KeyCode == Enum.KeyCode.X then
+                followEnabled = not followEnabled
+                notify(followEnabled and "Auto-Follow ENABLED" or "Auto-Follow DISABLED")
+            end
+        end)
+
+        RunService.RenderStepped:Connect(function()
+            if followEnabled then
+                local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                local hrp = character:FindFirstChild("HumanoidRootPart")
+
+                local nearest = getNearestPlayer()
+                if humanoid and hrp and nearest and nearest.Character and nearest.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetPos = nearest.Character.HumanoidRootPart.Position
+                    local direction = (targetPos - hrp.Position)
+                    humanoid:Move(Vector3.new(direction.X, 0, direction.Z).Unit, false)
+                end
+            end
+        end)
+
+        notify("Auto-Follow script loaded. Press X to toggle.")
     end
 })
